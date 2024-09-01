@@ -92,7 +92,7 @@ class ModelTpServer:
             engine_args.model_path,
             engine_args.trust_remote_code,
             context_length=engine_args.context_length,
-            model_overide_args=engine_args.model_override_args,
+            model_override_args=engine_args.model_override_args,
         )
 
         self.model_runner = ModelRunner(
@@ -741,12 +741,10 @@ class ModelTpServer:
                 unfinished_indices.append(i)
 
             if req.finished() or (
-                (
-                    req.stream
-                    and (
-                        self.decode_forward_ct % self.stream_interval == 0
-                        or len(req.output_ids) == 1
-                    )
+                req.stream
+                and (
+                    self.decode_forward_ct % self.stream_interval == 0
+                    or len(req.output_ids) == 1
                 )
             ):
                 output_rids.append(req.rid)

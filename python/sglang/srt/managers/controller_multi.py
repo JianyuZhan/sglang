@@ -73,7 +73,7 @@ class ControllerMulti:
     ):
         # Parse args
         self.engine_args = engine_args
-        self.model_overide_args = engine_args.model_override_args
+        self.model_override_args = engine_args.model_override_args
         self.load_balance_method = LoadBalanceMethod.from_str(
             engine_args.load_balance_method
         )
