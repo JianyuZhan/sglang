@@ -93,7 +93,7 @@ class TokenizerManager:
         self.hf_config = get_config(
             self.model_path,
             trust_remote_code=engine_args.trust_remote_code,
-            model_overide_args=engine_args.model_override_args,
+            model_override_args=engine_args.model_override_args,
         )
         self.is_generation = is_generation_model(
             self.hf_config.architectures, self.engine_args.is_embedding
@@ -343,9 +343,11 @@ class TokenizerManager:
                 if self.is_generation:
                     if obj.return_logprob[index] and obj.logprob_start_len[index] == -1:
                         obj.logprob_start_len[index] = len(input_ids) - 1
-                    pixel_values, image_hashes, image_sizes = (
-                        await self._get_pixel_values(obj.image_data[index])
-                    )
+                    (
+                        pixel_values,
+                        image_hashes,
+                        image_sizes,
+                    ) = await self._get_pixel_values(obj.image_data[index])
 
                     tokenized_obj = TokenizedGenerateReqInput(
                         rid,
@@ -664,7 +666,7 @@ class TokenizerManager:
         token_texts = self.tokenizer.batch_decode(token_ids)
         return [
             (logprob, token_id, token_text)
-            for (logprob, token_id), token_text, in zip(token_logprobs, token_texts)
+            for (logprob, token_id), token_text in zip(token_logprobs, token_texts)
         ]
 
     def detokenize_top_logprobs_tokens(self, top_logprobs, decode_to_text: bool):
